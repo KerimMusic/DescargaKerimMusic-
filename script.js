@@ -193,21 +193,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = item.dataset.title || item.querySelector('.item-title')?.textContent.trim() || 'Titulo';
             const cover = item.dataset.cover || '';
 
-            // Rellenar la modal
             modalBeatTitle.textContent = title;
             modalImg.src = cover;
 
-            // Guardar el beat que abrió la modal
             modalItem = item;
 
-            // Mostrar la modal
             purchaseModal.classList.add('visible');
 
-            e.stopPropagation(); // Detiene la propagación para que no se active el reproductor
+            e.stopPropagation();
             return;
         }
 
-        // Si se hace clic en cualquier otra parte del ítem, se reproduce
         const item = e.target.closest('.playlist-item');
         if (!item) return;
         loadItem(item, true);
@@ -215,12 +211,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------- Eventos de la Modal ---------- */
 
-    // Cerrar modal con el botón X
     closeModalBtn.addEventListener('click', () => {
         purchaseModal.classList.remove('visible');
     });
 
-    // Cerrar modal al hacer clic fuera del contenido (en el overlay)
     purchaseModal.addEventListener('click', (e) => {
         if (e.target === purchaseModal) {
             purchaseModal.classList.remove('visible');
@@ -231,19 +225,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const TELEGRAM_USER = 'https://t.me/Soporte95';
 
+    // La licencia exclusiva NO tiene precio fijo: se negocia con el Beatmaker.
     const LICENSE_INFO = {
         mp3:       { nombre: 'MP3',       precio: '$300 MXN' },
         wav:       { nombre: 'WAV',       precio: '$600 MXN' },
-        exclusivo: { nombre: 'EXCLUSIVA', precio: '$600 MXN' }
+        exclusivo: { nombre: 'EXCLUSIVA', precio: 'A convenir con el Beatmaker' }
     };
 
     function buildTelegramUrl(beatTitle, beatInfo, licencia) {
+        const esExclusiva = licencia.nombre === 'EXCLUSIVA';
+
+        const bloquePrecio = esExclusiva
+            ? 'Precio: A convenir directamente con el Beatmaker\n'
+            : `Precio: ${licencia.precio}\n`;
+
         const mensaje =
             'Hola, quiero comprar este beat.\n\n' +
             `Beat: ${beatTitle}\n` +
             `Licencia: ${licencia.nombre}\n` +
-            `Precio: ${licencia.precio}\n\n` +
-            'Información del beat:\n' +
+            bloquePrecio +
+            '\nInformación del beat:\n' +
             `${beatInfo}`;
 
         return `${TELEGRAM_USER}?text=${encodeURIComponent(mensaje)}`;
@@ -256,7 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const licencia = LICENSE_INFO[type];
             if (!licencia) return;
 
-            // Obtener la info dinámica del beat que abrió la modal
             const source = modalItem || currentItem;
             const beatTitle =
                 (source?.dataset?.title) ||
@@ -271,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const url = buildTelegramUrl(beatTitle, beatInfo, licencia);
 
-            // Abre Telegram con el mensaje preparado en el campo de escritura
             window.open(url, '_blank');
 
             purchaseModal.classList.remove('visible');
