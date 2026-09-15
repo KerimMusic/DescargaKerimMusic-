@@ -98,22 +98,23 @@ body {
     min-width: 0;
 }
 
+/* MODIFICADO: Título de la lista de reproducción */
 .item-title {
     font-size: 18px;
     font-weight: 400;
     color: #ffffff;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal; /* Permite saltos de línea */
+    word-break: break-word; /* Rompe palabras largas para que no se desborden */
+    line-height: 1.2;
 }
 
 .item-subtitle {
     font-size: 13px;
     color: #b3b3b3;
     margin-top: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.2;
 }
 
 /* --- BOTÓN COMPRAR --- */
@@ -199,13 +200,14 @@ body {
     min-width: 0;
 }
 
+/* MODIFICADO: Título del reproductor inferior */
 .player-title {
     font-size: 16px;
     color: #ffffff;
     margin-bottom: 8px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal; /* Permite saltos de línea */
+    word-break: break-word; /* Rompe palabras largas */
+    line-height: 1.2;
 }
 
 /* --- BARRA DE PROGRESO --- */
@@ -377,6 +379,7 @@ body {
     font-size: 32px;
     font-weight: 700;
     margin-bottom: 20px;
+    word-break: break-word;
 }
 
 .modal-description {
