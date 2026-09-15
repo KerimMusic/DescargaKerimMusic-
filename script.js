@@ -50,6 +50,17 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from(playlist.querySelectorAll('.playlist-item'));
     }
 
+    /* ---------- Título unificado: fuente única de verdad ---------- */
+    // Siempre lee el texto visible de .item-title; usa data-title solo como respaldo.
+    function getItemTitle(item) {
+        if (!item) return '';
+        return (
+            item.querySelector('.item-title')?.textContent.trim() ||
+            item.dataset.title?.trim() ||
+            ''
+        );
+    }
+
     /* ---------- Mezclar aleatoriamente la lista ---------- */
 
     function shufflePlaylist() {
@@ -68,8 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const src   = item.dataset.src;
         const cover = item.dataset.cover;
-        const title = item.dataset.title ||
-                      item.querySelector('.item-title')?.textContent.trim() || '';
+        const title = getItemTitle(item);
 
         if (!src) {
             console.warn('Ítem sin data-src:', item);
@@ -104,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isSkipping) return;
         isSkipping = true;
 
-        console.warn('Pista no reproducible:', failedItem?.dataset?.title || failedItem);
+        console.warn('Pista no reproducible:', getItemTitle(failedItem) || failedItem);
 
         updateIcon(false);
         updateProgress(0);
@@ -190,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const item = e.target.closest('.playlist-item');
             if (!item) return;
 
-            const title = item.dataset.title || item.querySelector('.item-title')?.textContent.trim() || 'Titulo';
+            const title = getItemTitle(item) || 'Titulo';
             const cover = item.dataset.cover || '';
 
             modalBeatTitle.textContent = title;
@@ -257,9 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const source = modalItem || currentItem;
             const beatTitle =
-                (source?.dataset?.title) ||
-                source?.querySelector('.item-title')?.textContent.trim() ||
-                modalBeatTitle.textContent ||
+                getItemTitle(source) ||
+                modalBeatTitle.textContent.trim() ||
                 'Sin título';
 
             const subtitle =
