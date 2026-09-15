@@ -26,7 +26,7 @@ body {
 /* --- LOGOTIPO OMEGA BEATS (IMAGEN) --- */
 .header-logo {
     padding: 20px 20px 10px 20px;
-    max-width: 100px; /* Ajusta este valor si quieres el logo más grande o pequeño */
+    max-width: 100px;
 }
 
 .header-logo img {
@@ -98,13 +98,12 @@ body {
     min-width: 0;
 }
 
-/* MODIFICADO: Título de la lista de reproducción */
 .item-title {
     font-size: 18px;
     font-weight: 400;
     color: #ffffff;
-    white-space: normal; /* Permite saltos de línea */
-    word-break: break-word; /* Rompe palabras largas para que no se desborden */
+    white-space: normal;
+    word-break: break-word;
     line-height: 1.2;
 }
 
@@ -200,13 +199,12 @@ body {
     min-width: 0;
 }
 
-/* MODIFICADO: Título del reproductor inferior */
 .player-title {
     font-size: 16px;
     color: #ffffff;
     margin-bottom: 8px;
-    white-space: normal; /* Permite saltos de línea */
-    word-break: break-word; /* Rompe palabras largas */
+    white-space: normal;
+    word-break: break-word;
     line-height: 1.2;
 }
 
@@ -241,7 +239,6 @@ body {
     transition: width 0.1s linear;
 }
 
-/* Círculo (Thumb) de la barra de progreso */
 .progress-thumb {
     position: absolute;
     top: 50%;
@@ -256,7 +253,6 @@ body {
     opacity: 0;
 }
 
-/* Mostrar el thumb solo cuando haya progreso */
 .progress-bar[aria-valuenow="0"] .progress-thumb {
     opacity: 0;
 }
