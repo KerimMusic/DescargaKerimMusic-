@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBeatTitle = document.getElementById('modal-beat-title');
 
     let currentItem = null;
+    let modalItem   = null;   // Beat que abrió la modal actual
     let isSkipping  = false;
 
     const ICON_PLAY  = '<polygon points="5,3 19,12 5,21" fill="#ffffff" />';
@@ -196,9 +197,12 @@ document.addEventListener('DOMContentLoaded', () => {
             modalBeatTitle.textContent = title;
             modalImg.src = cover;
 
+            // Guardar el beat que abrió la modal
+            modalItem = item;
+
             // Mostrar la modal
             purchaseModal.classList.add('visible');
-            
+
             e.stopPropagation(); // Detiene la propagación para que no se active el reproductor
             return;
         }
@@ -223,13 +227,53 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    /* ---------- Compra: abrir Telegram con mensaje dinámico ---------- */
+
+    const TELEGRAM_USER = 'https://t.me/Soporte95';
+
+    const LICENSE_INFO = {
+        mp3:       { nombre: 'MP3',       precio: '$300 MXN' },
+        wav:       { nombre: 'WAV',       precio: '$600 MXN' },
+        exclusivo: { nombre: 'EXCLUSIVA', precio: '$600 MXN' }
+    };
+
+    function buildTelegramUrl(beatTitle, beatInfo, licencia) {
+        const mensaje =
+            'Hola, quiero comprar este beat.\n\n' +
+            `Beat: ${beatTitle}\n` +
+            `Licencia: ${licencia.nombre}\n` +
+            `Precio: ${licencia.precio}\n\n` +
+            'Información del beat:\n' +
+            `${beatInfo}`;
+
+        return `${TELEGRAM_USER}?text=${encodeURIComponent(mensaje)}`;
+    }
+
     // Manejar clic en los botones de precios (MP3, WAV, Exclusivo)
     document.querySelectorAll('.price-button').forEach(button => {
         button.addEventListener('click', (e) => {
             const type = e.target.dataset.type;
-            const beatTitle = modalBeatTitle.textContent;
-            console.log(`Compra iniciada: Beat "${beatTitle}" - Formato: ${type.toUpperCase()}`);
-            alert(`Has seleccionado comprar el beat "${beatTitle}" en formato ${type.toUpperCase()}. ¡Gracias por tu compra!`);
+            const licencia = LICENSE_INFO[type];
+            if (!licencia) return;
+
+            // Obtener la info dinámica del beat que abrió la modal
+            const source = modalItem || currentItem;
+            const beatTitle =
+                (source?.dataset?.title) ||
+                source?.querySelector('.item-title')?.textContent.trim() ||
+                modalBeatTitle.textContent ||
+                'Sin título';
+
+            const subtitle =
+                source?.querySelector('.item-subtitle')?.textContent.trim() || '';
+
+            const beatInfo = subtitle || 'No disponible';
+
+            const url = buildTelegramUrl(beatTitle, beatInfo, licencia);
+
+            // Abre Telegram con el mensaje preparado en el campo de escritura
+            window.open(url, '_blank');
+
             purchaseModal.classList.remove('visible');
         });
     });
