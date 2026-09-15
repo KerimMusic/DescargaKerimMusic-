@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ---------- Título unificado: fuente única de verdad ---------- */
-    // Siempre lee el texto visible de .item-title; usa data-title solo como respaldo.
     function getItemTitle(item) {
         if (!item) return '';
         return (
@@ -59,6 +58,17 @@ document.addEventListener('DOMContentLoaded', () => {
             item.dataset.title?.trim() ||
             ''
         );
+    }
+
+    /* ---------- Portada unificada: fuente única de verdad ---------- */
+    // Lee SIEMPRE la imagen real de la miniatura del ítem.
+    // Si esa imagen cambia (en el HTML o por JS), el cambio se propaga
+    // al reproductor y a la modal de compra sin tocar nada más.
+    function getItemCover(item) {
+        if (!item) return '';
+        const img = item.querySelector('.thumbnail img');
+        if (img && img.getAttribute('src')) return img.src;
+        return item.dataset.cover || '';
     }
 
     /* ---------- Mezclar aleatoriamente la lista ---------- */
@@ -78,7 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!item) return;
 
         const src   = item.dataset.src;
-        const cover = item.dataset.cover;
+        const cover = getItemCover(item);   // ← portada desde la miniatura
         const title = getItemTitle(item);
 
         if (!src) {
@@ -201,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!item) return;
 
             const title = getItemTitle(item) || 'Titulo';
-            const cover = item.dataset.cover || '';
+            const cover = getItemCover(item);   // ← misma portada que el reproductor
 
             modalBeatTitle.textContent = title;
             modalImg.src = cover;
@@ -282,6 +292,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
             purchaseModal.classList.remove('visible');
         });
+    });
+
+    /* ---------- Sincronización EN VIVO de portadas ---------- */
+    // Si el src de cualquier miniatura cambia dinámicamente,
+    // se actualiza el reproductor (si es la pista activa) y la modal
+    // (si es la pista que se está mostrando).
+    const coverObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            const img  = mutation.target;
+            const item = img.closest('.playlist-item');
+            if (!item) return;
+
+            const newSrc = img.getAttribute('src') || '';
+
+            if (item === currentItem) {
+                playerCover.src = newSrc;
+            }
+            if (item === modalItem && purchaseModal.classList.contains('visible')) {
+                modalImg.src = newSrc;
+            }
+        });
+    });
+
+    getAllItems().forEach(item => {
+        const img = item.querySelector('.thumbnail img');
+        if (img) {
+            coverObserver.observe(img, { attributes: true, attributeFilter: ['src'] });
+        }
     });
 
 });
