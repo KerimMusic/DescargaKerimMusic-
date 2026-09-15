@@ -34,6 +34,7 @@ body {
 .playlist-item {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 15px;
     margin-bottom: 20px;
     cursor: pointer;
@@ -72,6 +73,7 @@ body {
 .item-info {
     display: flex;
     flex-direction: column;
+    flex: 1;
     min-width: 0;
 }
 
@@ -82,6 +84,38 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.item-subtitle {
+    font-size: 13px;
+    color: #b3b3b3;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- BOTÓN COMPRAR --- */
+.buy-button {
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.buy-button:hover {
+    background-color: #e6e6e6;
+}
+
+.buy-button:active {
+    transform: scale(0.95);
 }
 
 /* --- REPRODUCTOR --- */
@@ -97,9 +131,9 @@ body {
     padding: 15px 20px;
     border-top: 1px solid #1a1a1a;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6);
+    z-index: 10;
 }
 
-/* Portada y título ocultos al inicio */
 .player-thumbnail,
 .player-title {
     opacity: 0;
@@ -107,14 +141,12 @@ body {
     transition: opacity 0.4s ease, visibility 0.4s ease;
 }
 
-/* Al activarse el reproductor, aparecen */
 .player.active .player-thumbnail,
 .player.active .player-title {
     opacity: 1;
     visibility: visible;
 }
 
-/* El botón se ve atenuado hasta que hay un beat seleccionado */
 .player:not(.active) .play-button {
     opacity: 0.4;
     pointer-events: none;
@@ -165,7 +197,6 @@ body {
     cursor: pointer;
 }
 
-/* Zona de clic ampliada (no visible) */
 .progress-bar::before {
     content: "";
     position: absolute;
@@ -228,4 +259,129 @@ body {
     height: 18px;
     margin-left: 3px;
     transition: all 0.2s ease;
+}
+
+/* --- VENTANA MODAL DE COMPRA --- */
+.purchase-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000000;
+    z-index: 1000;
+    display: none; /* Oculto por defecto */
+    overflow-y: auto;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.purchase-modal-overlay.visible {
+    display: block;
+    opacity: 1;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    padding: 40px 20px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 35px;
+    line-height: 1;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.modal-title {
+    font-size: 26px;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.modal-cover {
+    width: 260px;
+    height: 260px;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+}
+
+.modal-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.modal-beat-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.modal-description {
+    font-size: 15px;
+    line-height: 1.5;
+    color: #e0e0e0;
+    margin-bottom: 40px;
+    padding: 0 10px;
+}
+
+.modal-pricing {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 10px;
+}
+
+.price-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    gap: 8px;
+}
+
+.price-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #ffffff;
+}
+
+.price-button {
+    width: 100%;
+    padding: 12px 0;
+    background-color: #ffffff;
+    color: #000000;
+    border: none;
+    border-radius: 50px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.price-button:hover {
+    background-color: #e6e6e6;
+}
+
+.price-button:active {
+    transform: scale(0.95);
 }
