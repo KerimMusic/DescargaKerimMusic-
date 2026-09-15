@@ -352,43 +352,31 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ---------- FUNCIÓN DE COMPARTIR ---------- */
-const shareBtn = document.getElementById('share-btn');
+    /* ---------- FUNCIÓN DE COMPARTIR (enlace de descarga APK) ---------- */
+    const shareBtn = document.getElementById('share-btn');
+    const SHARE_URL = 'https://apk.e-droid.net/apk/app4183393-bd2q7x.apk?v=2';
+    
+    if (shareBtn) {
+        shareBtn.addEventListener('click', () => {
+            const currentTitle = currentItem ? getItemTitle(currentItem) : document.title;
+            const shareData = {
+                title: 'Omega Beats',
+                text: currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
+                url: SHARE_URL
+            };
 
-if (shareBtn) {
-    shareBtn.addEventListener('click', () => {
-        // Obtener el título de la pista actual si existe, de lo contrario usar el título del documento
-        const currentTitle = currentItem ? getItemTitle(currentItem) : document.title;
-        const shareData = {
-            title: 'Omega Beats',
-            text: currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
-            url: window.location.href
-        };
-
-        if (navigator.share) {
-            navigator.share(shareData)
-                .then(() => console.log('Compartido con éxito'))
-                .catch((error) => console.log('Error al compartir:', error));
-        } else {
-            // Fallback para navegadores que no soportan Web Share API (como escritorio)
-            const textToCopy = `${shareData.text}\n${shareData.url}`;
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                alert('¡Enlace y título copiados al portapapeles!');
-            }).catch(err => {
-                console.error('Error al copiar:', err);
-                alert('No se pudo compartir automáticamente. Copia este enlace: ' + shareData.url);
-            });
-        }
-    });
-}
+            if (navigator.share) {
+                navigator.share(shareData)
+                    .then(() => console.log('Compartido con éxito'))
+                    .catch((error) => console.log('Error al compartir:', error));
             } else {
                 // Fallback para navegadores que no soportan Web Share API (como escritorio)
-                const textToCopy = `${shareData.text}\n${shareData.url}`;
+                const textToCopy = `${shareData.text}\n${SHARE_URL}`;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     alert('¡Enlace y título copiados al portapapeles!');
                 }).catch(err => {
                     console.error('Error al copiar:', err);
-                    alert('No se pudo compartir automáticamente. Copia este enlace: ' + shareData.url);
+                    alert('No se pudo compartir automáticamente. Copia este enlace: ' + SHARE_URL);
                 });
             }
         });
