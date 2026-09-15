@@ -36,6 +36,62 @@ body {
     object-fit: contain;
 }
 
+/* --- BOTÓN DE CORAZÓN PARA BUSCAR --- */
+.heart-search-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    z-index: 20;
+    transition: transform 0.2s ease;
+}
+
+.heart-search-btn:hover {
+    transform: scale(1.1);
+}
+
+.heart-search-btn:active {
+    transform: scale(0.9);
+}
+
+/* --- CONTENEDOR DE LA BARRA DE BÚSQUEDA --- */
+.search-container {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s ease;
+    padding: 0 20px;
+    background-color: #000000;
+    z-index: 15;
+}
+
+.search-container.visible {
+    max-height: 70px;
+    padding: 0 20px 15px 20px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 25px;
+    border: 1px solid #333;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #ff2a2a;
+}
+
+.search-input::placeholder {
+    color: #888;
+}
+
 /* --- LISTA DE REPRODUCCIÓN --- */
 .playlist {
     flex: 1;
