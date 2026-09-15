@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Reproductor de Música UI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- Lista de reproducción -->
+        <div class="playlist" id="playlist">
+
+            <!-- PISTA 1 -->
+            <div class="playlist-item"
+                 data-src="https://www.dropbox.com/scl/fi/plzx3y8r6o3yek9t7va96/Beats-Wav-150-BPM-Bb.wav?rlkey=9aooxmnkx20iefpkki0svp2eu&amp;st=mjwyd8l1&amp;raw=1"
+                 data-cover="https://www.dropbox.com/scl/fi/dxpsq9dmhgyms68dq5p6d/Beats-Sex.jpg?rlkey=qg2lmvf96f76y7xvtgvnci1dq&amp;st=ab9v4mdi&amp;raw=1"
+                 data-title="Beats Sex">
+                <div class="thumbnail">
+                    <img src="https://www.dropbox.com/scl/fi/dxpsq9dmhgyms68dq5p6d/Beats-Sex.jpg?rlkey=qg2lmvf96f76y7xvtgvnci1dq&amp;st=ab9v4mdi&amp;raw=1"
+                         alt="Portada de Beats Sex" loading="lazy">
+                </div>
+                <div class="item-info">
+                    <span class="item-title">Beats Sex</span>
+                </div>
+            </div>
+
+            <!-- PISTA 2 -->
+            <!-- ⚠️ IMPORTANTE: Reemplaza la URL de data-src por el audio real de "Beats Love".
+                 Por ahora usa el mismo audio para que puedas probar la interfaz. -->
+            <div class="playlist-item"
+                 data-src="https://www.dropbox.com/scl/fi/plzx3y8r6o3yek9t7va96/Beats-Wav-150-BPM-Bb.wav?rlkey=9aooxmnkx20iefpkki0svp2eu&amp;st=mjwyd8l1&amp;raw=1"
+                 data-cover="https://www.dropbox.com/scl/fi/6zvkv019a6vzokdq39hc5/Perfil2.jpg?rlkey=z1i5gy3o3s59136bu6m53imsj&amp;st=5825x2p4&amp;raw=1"
+                 data-title="Beats Love">
+                <div class="thumbnail">
+                    <img src="https://www.dropbox.com/scl/fi/6zvkv019a6vzokdq39hc5/Perfil2.jpg?rlkey=z1i5gy3o3s59136bu6m53imsj&amp;st=5825x2p4&amp;raw=1"
+                         alt="Portada de Beats Love" loading="lazy">
+                </div>
+                <div class="item-info">
+                    <span class="item-title">Beats Love</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Reproductor de audio (Parte inferior) -->
+        <div class="player" id="player">
+
+            <div class="player-thumbnail" id="player-thumbnail">
+                <img id="player-cover" alt="Portada">
+            </div>
+
+            <div class="player-center">
+                <div class="player-title" id="player-title"></div>
+                <div class="progress-bar" id="progress-bar" role="slider"
+                     aria-label="Progreso" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+                <div class="time-labels">
+                    <span id="current-time">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+            </div>
+
+            <button class="play-button" id="play-button" type="button" aria-label="Reproducir">
+                <svg id="play-icon" viewBox="0 0 24 24" width="22" height="22">
+                    <polygon points="5,3 19,12 5,21" fill="#ffffff" />
+                </svg>
+            </button>
+        </div>
+
+    </div>
+
+    <audio id="audio-player" preload="metadata"></audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
