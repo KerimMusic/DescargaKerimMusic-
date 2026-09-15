@@ -316,21 +316,21 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ---------- FUNCIÓN DE BÚSQUEDA CON EL CORAZÓN ---------- */
-    const heartSearchBtn = document.getElementById('heart-search-btn');
+    const heartSearchBtn  = document.getElementById('heart-search-btn');
     const searchContainer = document.getElementById('search-container');
-    const searchInput = document.getElementById('search-input');
+    const searchInput     = document.getElementById('search-input');
 
     if (heartSearchBtn && searchContainer && searchInput) {
-        
+
         // Abrir/Cerrar la barra de búsqueda al hacer clic en el corazón
         heartSearchBtn.addEventListener('click', () => {
             searchContainer.classList.toggle('visible');
-            
+
             if (searchContainer.classList.contains('visible')) {
                 searchInput.focus();
             } else {
                 searchInput.value = '';
-                searchInput.dispatchEvent(new Event('input')); 
+                searchInput.dispatchEvent(new Event('input'));
             }
         });
 
@@ -340,9 +340,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const items = document.querySelectorAll('.playlist-item');
 
             items.forEach(item => {
-                const title = item.querySelector('.item-title')?.textContent.toLowerCase() || '';
+                const title    = item.querySelector('.item-title')?.textContent.toLowerCase() || '';
                 const subtitle = item.querySelector('.item-subtitle')?.textContent.toLowerCase() || '';
-                
+
                 if (title.includes(query) || subtitle.includes(query)) {
                     item.style.display = 'flex';
                 } else {
@@ -355,14 +355,14 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------- FUNCIÓN DE COMPARTIR (enlace de descarga APK) ---------- */
     const shareBtn = document.getElementById('share-btn');
     const SHARE_URL = 'https://apk.e-droid.net/apk/app4183393-bd2q7x.apk?v=2';
-    
+
     if (shareBtn) {
         shareBtn.addEventListener('click', () => {
             const currentTitle = currentItem ? getItemTitle(currentItem) : document.title;
             const shareData = {
                 title: 'Omega Beats',
-                text: currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
-                url: SHARE_URL
+                text:  currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
+                url:   SHARE_URL
             };
 
             if (navigator.share) {
@@ -370,7 +370,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(() => console.log('Compartido con éxito'))
                     .catch((error) => console.log('Error al compartir:', error));
             } else {
-                // Fallback para navegadores que no soportan Web Share API (como escritorio)
                 const textToCopy = `${shareData.text}\n${SHARE_URL}`;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                     alert('¡Enlace y título copiados al portapapeles!');
@@ -381,5 +380,39 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    /* ---------- SUBMENÚ FIJO (PANEL LATERAL) ---------- */
+    const menuBtn         = document.getElementById('menu-btn');
+    const submenu         = document.getElementById('submenu');
+    const submenuOverlay  = document.getElementById('submenu-overlay');
+    const closeSubmenuBtn = document.getElementById('close-submenu');
+
+    function openSubmenu() {
+        if (!submenu || !submenuOverlay) return;
+        submenu.classList.add('visible');
+        submenuOverlay.classList.add('visible');
+        submenu.setAttribute('aria-hidden', 'false');
+    }
+
+    function closeSubmenu() {
+        if (!submenu || !submenuOverlay) return;
+        submenu.classList.remove('visible');
+        submenuOverlay.classList.remove('visible');
+        submenu.setAttribute('aria-hidden', 'true');
+    }
+
+    if (menuBtn)         menuBtn.addEventListener('click', openSubmenu);
+    if (closeSubmenuBtn) closeSubmenuBtn.addEventListener('click', closeSubmenu);
+    if (submenuOverlay)  submenuOverlay.addEventListener('click', closeSubmenu);
+
+    // Cerrar el submenú al hacer clic en cualquier enlace interno
+    document.querySelectorAll('.submenu-link').forEach(link => {
+        link.addEventListener('click', closeSubmenu);
+    });
+
+    // Cerrar con la tecla Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeSubmenu();
+    });
 
 });
