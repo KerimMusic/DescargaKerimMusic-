@@ -11,8 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const player         = document.getElementById('player');
     const playlist       = document.getElementById('playlist');
 
+    // Elementos de la Modal
+    const purchaseModal  = document.getElementById('purchase-modal');
+    const closeModalBtn  = document.getElementById('close-modal');
+    const modalImg       = document.getElementById('modal-img');
+    const modalBeatTitle = document.getElementById('modal-beat-title');
+
     let currentItem = null;
-    let isSkipping  = false;   // evita bucles si varias pistas fallan seguidas
+    let isSkipping  = false;
 
     const ICON_PLAY  = '<polygon points="5,3 19,12 5,21" fill="#ffffff" />';
     const ICON_PAUSE = '<rect x="6" y="4" width="4" height="16" fill="#ffffff" />' +
@@ -64,24 +70,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const title = item.dataset.title ||
                       item.querySelector('.item-title')?.textContent.trim() || '';
 
-        // Si no hay fuente válida, lo tratamos como error y saltamos
         if (!src) {
             console.warn('Ítem sin data-src:', item);
             handleLoadError(item);
             return;
         }
 
-        // Resaltar el ítem activo
         getAllItems().forEach(i => i.classList.remove('active'));
         item.classList.add('active');
 
-        // Datos en el reproductor
         currentItem = item;
         playerCover.src = cover || '';
         playerTitle.textContent = title;
         player.classList.add('active');
 
-        // Resetear UI y cargar audio
         audioPlayer.src = src;
         audioPlayer.currentTime = 0;
         updateProgress(0);
@@ -90,7 +92,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (autoplay) {
             audioPlayer.play().catch(err => {
-                // Autoplay bloqueado por el navegador: no es un error de la pista
                 console.warn('No se pudo iniciar automáticamente:', err);
             });
         }
@@ -99,19 +100,16 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------- Manejo de errores de carga ---------- */
 
     function handleLoadError(failedItem) {
-        // Evitamos saltos en cascada si muchas pistas fallan
         if (isSkipping) return;
         isSkipping = true;
 
         console.warn('Pista no reproducible:', failedItem?.dataset?.title || failedItem);
 
-        // Reseteamos icono/estado
         updateIcon(false);
         updateProgress(0);
         currentTimeEl.textContent = '0:00';
         durationEl.textContent = '0:00';
 
-        // Esperamos un tick para no encadenar errores inmediatamente
         setTimeout(() => {
             isSkipping = false;
             playRandomItem();
@@ -183,11 +181,57 @@ document.addEventListener('DOMContentLoaded', () => {
         audioPlayer.currentTime = Math.min(1, Math.max(0, ratio)) * audioPlayer.duration;
     });
 
-    /* ---------- Clic en la lista de reproducción ---------- */
+    /* ---------- Clic en la lista de reproducción y botón COMPRAR ---------- */
 
     playlist.addEventListener('click', (e) => {
+        // Si se hace clic en el botón de comprar
+        if (e.target.closest('.buy-button')) {
+            const item = e.target.closest('.playlist-item');
+            if (!item) return;
+
+            const title = item.dataset.title || item.querySelector('.item-title')?.textContent.trim() || 'Titulo';
+            const cover = item.dataset.cover || '';
+
+            // Rellenar la modal
+            modalBeatTitle.textContent = title;
+            modalImg.src = cover;
+
+            // Mostrar la modal
+            purchaseModal.classList.add('visible');
+            
+            e.stopPropagation(); // Detiene la propagación para que no se active el reproductor
+            return;
+        }
+
+        // Si se hace clic en cualquier otra parte del ítem, se reproduce
         const item = e.target.closest('.playlist-item');
         if (!item) return;
         loadItem(item, true);
     });
+
+    /* ---------- Eventos de la Modal ---------- */
+
+    // Cerrar modal con el botón X
+    closeModalBtn.addEventListener('click', () => {
+        purchaseModal.classList.remove('visible');
+    });
+
+    // Cerrar modal al hacer clic fuera del contenido (en el overlay)
+    purchaseModal.addEventListener('click', (e) => {
+        if (e.target === purchaseModal) {
+            purchaseModal.classList.remove('visible');
+        }
+    });
+
+    // Manejar clic en los botones de precios (MP3, WAV, Exclusivo)
+    document.querySelectorAll('.price-button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const type = e.target.dataset.type;
+            const beatTitle = modalBeatTitle.textContent;
+            console.log(`Compra iniciada: Beat "${beatTitle}" - Formato: ${type.toUpperCase()}`);
+            alert(`Has seleccionado comprar el beat "${beatTitle}" en formato ${type.toUpperCase()}. ¡Gracias por tu compra!`);
+            purchaseModal.classList.remove('visible');
+        });
+    });
+
 });
