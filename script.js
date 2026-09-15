@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalBeatTitle = document.getElementById('modal-beat-title');
 
     let currentItem = null;
-    let modalItem   = null;   // Beat que abrió la modal actual
+    let modalItem   = null;
     let isSkipping  = false;
 
     const ICON_PLAY  = '<polygon points="5,3 19,12 5,21" fill="#ffffff" />';
@@ -225,7 +225,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const TELEGRAM_USER = 'https://t.me/Soporte95';
 
-    // La licencia exclusiva NO tiene precio fijo: se negocia con el Beatmaker.
     const LICENSE_INFO = {
         mp3:       { nombre: 'MP3',       precio: '$300 MXN' },
         wav:       { nombre: 'WAV',       precio: '$600 MXN' },
@@ -250,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${TELEGRAM_USER}?text=${encodeURIComponent(mensaje)}`;
     }
 
-    // Manejar clic en los botones de precios (MP3, WAV, Exclusivo)
     document.querySelectorAll('.price-button').forEach(button => {
         button.addEventListener('click', (e) => {
             const type = e.target.dataset.type;
