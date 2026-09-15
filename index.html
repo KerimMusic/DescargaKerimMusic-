@@ -24,12 +24,12 @@
                 </div>
                 <div class="item-info">
                     <span class="item-title">Beats Sex</span>
+                    <span class="item-subtitle">Oyentes: 55M</span>
                 </div>
+                <button class="buy-button">COMPRAR</button>
             </div>
 
             <!-- PISTA 2 -->
-            <!-- ⚠️ IMPORTANTE: Reemplaza la URL de data-src por el audio real de "Beats Love".
-                 Por ahora usa el mismo audio para que puedas probar la interfaz. -->
             <div class="playlist-item"
                  data-src="https://www.dropbox.com/scl/fi/plzx3y8r6o3yek9t7va96/Beats-Wav-150-BPM-Bb.wav?rlkey=9aooxmnkx20iefpkki0svp2eu&amp;st=mjwyd8l1&amp;raw=1"
                  data-cover="https://www.dropbox.com/scl/fi/6zvkv019a6vzokdq39hc5/Perfil2.jpg?rlkey=z1i5gy3o3s59136bu6m53imsj&amp;st=5825x2p4&amp;raw=1"
@@ -40,7 +40,9 @@
                 </div>
                 <div class="item-info">
                     <span class="item-title">Beats Love</span>
+                    <span class="item-subtitle">Oyentes: 42M</span>
                 </div>
+                <button class="buy-button">COMPRAR</button>
             </div>
 
         </div>
@@ -67,6 +69,40 @@
                     <polygon points="5,3 19,12 5,21" fill="#ffffff" />
                 </svg>
             </button>
+        </div>
+
+        <!-- VENTANA MODAL DE COMPRA -->
+        <div class="purchase-modal-overlay" id="purchase-modal">
+            <div class="modal-content">
+                <button class="close-modal" id="close-modal" aria-label="Cerrar">&times;</button>
+                
+                <h2 class="modal-title">COMPRA DE BEATS</h2>
+                
+                <div class="modal-cover">
+                    <img id="modal-img" src="" alt="Portada del beat">
+                </div>
+                
+                <h3 class="modal-beat-title" id="modal-beat-title">Titulo</h3>
+                
+                <p class="modal-description">
+                    Todos nuestros beats son 100 % originales y de nuestra propia creación. La compra de los archivos en formato MP3 o WAV es comercial, y la licencia exclusiva es única, lo que significa que el beat adquirido bajo exclusividad no se volverá a vender a ningún otro artista.
+                </p>
+                
+                <div class="modal-pricing">
+                    <div class="price-option">
+                        <span class="price-label">MP3</span>
+                        <button class="price-button" data-type="mp3">$300</button>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">WAV</span>
+                        <button class="price-button" data-type="wav">$600</button>
+                    </div>
+                    <div class="price-option">
+                        <span class="price-label">UNICO</span>
+                        <button class="price-button" data-type="exclusivo">Exclusivo</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
