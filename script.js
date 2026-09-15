@@ -156,19 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     shufflePlaylist();
 
-    // ✅ ALEATORIO: carga y reproduce una pista aleatoria al abrir la página
-    playRandomItem();
-
-    // ✅ ALEATORIO: si el navegador bloquea el autoplay, arranca con el primer toque
-    const startOnFirstInteraction = () => {
-        if (currentItem && audioPlayer.paused) {
-            audioPlayer.play().catch(() => {});
-        }
-        document.removeEventListener('click', startOnFirstInteraction);
-        document.removeEventListener('touchstart', startOnFirstInteraction);
-    };
-    document.addEventListener('click', startOnFirstInteraction);
-    document.addEventListener('touchstart', startOnFirstInteraction);
+    // ✅ El reproductor inicia detenido, sin reproducción automática.
+    // La reproducción comienza solo cuando el usuario elige un beat de la lista.
 
     /* ---------- Botón de play ---------- */
 
