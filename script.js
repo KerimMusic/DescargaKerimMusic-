@@ -61,9 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ---------- Portada unificada: fuente única de verdad ---------- */
-    // Lee SIEMPRE la imagen real de la miniatura del ítem.
-    // Si esa imagen cambia (en el HTML o por JS), el cambio se propaga
-    // al reproductor y a la modal de compra sin tocar nada más.
     function getItemCover(item) {
         if (!item) return '';
         const img = item.querySelector('.thumbnail img');
@@ -88,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!item) return;
 
         const src   = item.dataset.src;
-        const cover = getItemCover(item);   // ← portada desde la miniatura
+        const cover = getItemCover(item);
         const title = getItemTitle(item);
 
         if (!src) {
@@ -205,13 +202,12 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ---------- Clic en la lista de reproducción y botón COMPRAR ---------- */
 
     playlist.addEventListener('click', (e) => {
-        // Si se hace clic en el botón de comprar
         if (e.target.closest('.buy-button')) {
             const item = e.target.closest('.playlist-item');
             if (!item) return;
 
             const title = getItemTitle(item) || 'Titulo';
-            const cover = getItemCover(item);   // ← misma portada que el reproductor
+            const cover = getItemCover(item);
 
             modalBeatTitle.textContent = title;
             modalImg.src = cover;
@@ -295,9 +291,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /* ---------- Sincronización EN VIVO de portadas ---------- */
-    // Si el src de cualquier miniatura cambia dinámicamente,
-    // se actualiza el reproductor (si es la pista activa) y la modal
-    // (si es la pista que se está mostrando).
     const coverObserver = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             const img  = mutation.target;
@@ -321,5 +314,42 @@ document.addEventListener('DOMContentLoaded', () => {
             coverObserver.observe(img, { attributes: true, attributeFilter: ['src'] });
         }
     });
+
+    /* ---------- FUNCIÓN DE BÚSQUEDA CON EL CORAZÓN ---------- */
+    const heartSearchBtn = document.getElementById('heart-search-btn');
+    const searchContainer = document.getElementById('search-container');
+    const searchInput = document.getElementById('search-input');
+
+    if (heartSearchBtn && searchContainer && searchInput) {
+        
+        // Abrir/Cerrar la barra de búsqueda al hacer clic en el corazón
+        heartSearchBtn.addEventListener('click', () => {
+            searchContainer.classList.toggle('visible');
+            
+            if (searchContainer.classList.contains('visible')) {
+                searchInput.focus();
+            } else {
+                searchInput.value = '';
+                searchInput.dispatchEvent(new Event('input')); 
+            }
+        });
+
+        // Filtrar los beats en tiempo real mientras se escribe
+        searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.playlist-item');
+
+            items.forEach(item => {
+                const title = item.querySelector('.item-title')?.textContent.toLowerCase() || '';
+                const subtitle = item.querySelector('.item-subtitle')?.textContent.toLowerCase() || '';
+                
+                if (title.includes(query) || subtitle.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
 
 });
