@@ -353,22 +353,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ---------- FUNCIÓN DE COMPARTIR ---------- */
-    const shareBtn = document.getElementById('share-btn');
-    
-    if (shareBtn) {
-        shareBtn.addEventListener('click', () => {
-            // Obtener el título de la pista actual si existe, de lo contrario usar el título del documento
-            const currentTitle = currentItem ? getItemTitle(currentItem) : document.title;
-            const shareData = {
-                title: 'Omega Beats',
-                text: currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
-                url: window.location.href
-            };
+const shareBtn = document.getElementById('share-btn');
 
-            if (navigator.share) {
-                navigator.share(shareData)
-                    .then(() => console.log('Compartido con éxito'))
-                    .catch((error) => console.log('Error al compartir:', error));
+if (shareBtn) {
+    shareBtn.addEventListener('click', () => {
+        // Obtener el título de la pista actual si existe, de lo contrario usar el título del documento
+        const currentTitle = currentItem ? getItemTitle(currentItem) : document.title;
+        const shareData = {
+            title: 'Omega Beats',
+            text: currentTitle ? `Escucha este beat: ${currentTitle}` : 'Escucha Omega Beats',
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            navigator.share(shareData)
+                .then(() => console.log('Compartido con éxito'))
+                .catch((error) => console.log('Error al compartir:', error));
+        } else {
+            // Fallback para navegadores que no soportan Web Share API (como escritorio)
+            const textToCopy = `${shareData.text}\n${shareData.url}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('¡Enlace y título copiados al portapapeles!');
+            }).catch(err => {
+                console.error('Error al copiar:', err);
+                alert('No se pudo compartir automáticamente. Copia este enlace: ' + shareData.url);
+            });
+        }
+    });
+}
             } else {
                 // Fallback para navegadores que no soportan Web Share API (como escritorio)
                 const textToCopy = `${shareData.text}\n${shareData.url}`;
