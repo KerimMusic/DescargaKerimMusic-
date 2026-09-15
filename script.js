@@ -156,10 +156,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     shufflePlaylist();
 
+    // ✅ ALEATORIO: carga y reproduce una pista aleatoria al abrir la página
+    playRandomItem();
+
+    // ✅ ALEATORIO: si el navegador bloquea el autoplay, arranca con el primer toque
+    const startOnFirstInteraction = () => {
+        if (currentItem && audioPlayer.paused) {
+            audioPlayer.play().catch(() => {});
+        }
+        document.removeEventListener('click', startOnFirstInteraction);
+        document.removeEventListener('touchstart', startOnFirstInteraction);
+    };
+    document.addEventListener('click', startOnFirstInteraction);
+    document.addEventListener('touchstart', startOnFirstInteraction);
+
     /* ---------- Botón de play ---------- */
 
     playButton.addEventListener('click', () => {
-        if (!currentItem) return;
+        if (!currentItem) {
+            // ✅ ALEATORIO: si no hay nada cargado, elige una al azar
+            playRandomItem();
+            return;
+        }
         if (audioPlayer.paused) {
             audioPlayer.play().catch(err => console.error('Error al reproducir:', err));
         } else {
@@ -187,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIcon(false);
         updateProgress(0);
         currentTimeEl.textContent = '0:00';
-        playRandomItem();
+        playRandomItem(); // ✅ ALEATORIO: al terminar salta a otra al azar
     });
 
     /* ---------- Buscar en la barra de progreso ---------- */
