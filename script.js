@@ -361,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     /* ---------- FUNCIÓN DE COMPARTIR (enlace de descarga APK) ---------- */
     const shareBtn = document.getElementById('share-btn');
-    const SHARE_URL = 'https://apk.e-droid.net/apk/app4183393-bd2q7x.apk?v=2';
+    const SHARE_URL = 'https://kerimmusic.github.io/DescargarAppOmegaBeats/';
 
     if (shareBtn) {
         shareBtn.addEventListener('click', () => {
