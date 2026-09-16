@@ -23,7 +23,7 @@ body {
     overflow: hidden;
 }
 
-/* --- BARRA SUPERIOR (MENÚ | LOGO | ACCIONES) --- */
+/* --- BARRA SUPERIOR --- */
 .top-bar {
     position: relative;
     display: flex;
@@ -34,7 +34,6 @@ body {
     z-index: 20;
 }
 
-/* --- BOTÓN DE MENÚ (HAMBURGUESA) --- */
 .menu-btn {
     background: none;
     border: none;
@@ -50,7 +49,6 @@ body {
 .menu-btn:hover  { transform: scale(1.1); }
 .menu-btn:active { transform: scale(0.9); }
 
-/* --- LOGOTIPO OMEGA BEATS (CENTRADO) --- */
 .header-logo {
     position: absolute;
     left: 50%;
@@ -68,7 +66,6 @@ body {
     object-fit: contain;
 }
 
-/* --- ACCIONES (CORAZÓN + COMPARTIR) --- */
 .header-actions {
     display: flex;
     align-items: center;
@@ -76,7 +73,6 @@ body {
     z-index: 21;
 }
 
-/* --- BOTÓN DE COMPARTIR --- */
 .share-btn {
     background-color: #ff2a2a;
     border: none;
@@ -94,7 +90,6 @@ body {
 .share-btn:hover  { transform: scale(1.1); }
 .share-btn:active { transform: scale(0.9); }
 
-/* --- BOTÓN DE CORAZÓN PARA BUSCAR --- */
 .heart-search-btn {
     background: none;
     border: none;
@@ -109,7 +104,7 @@ body {
 .heart-search-btn:hover  { transform: scale(1.1); }
 .heart-search-btn:active { transform: scale(0.9); }
 
-/* --- SUBMENÚ FIJO (PANEL LATERAL) --- */
+/* --- SUBMENÚ --- */
 .submenu-overlay {
     position: fixed;
     inset: 0;
@@ -143,9 +138,7 @@ body {
     box-shadow: 4px 0 25px rgba(0, 0, 0, 0.7);
 }
 
-.submenu.visible {
-    transform: translateX(0);
-}
+.submenu.visible { transform: translateX(0); }
 
 .submenu-header {
     display: flex;
@@ -203,7 +196,7 @@ body {
     padding-left: 18px;
 }
 
-/* --- CONTENEDOR DE LA BARRA DE BÚSQUEDA --- */
+/* --- BUSCADOR --- */
 .search-container {
     max-height: 0;
     overflow: hidden;
@@ -230,15 +223,10 @@ body {
     transition: border-color 0.3s ease;
 }
 
-.search-input:focus {
-    border-color: #ff2a2a;
-}
+.search-input:focus { border-color: #ff2a2a; }
+.search-input::placeholder { color: #888; }
 
-.search-input::placeholder {
-    color: #888;
-}
-
-/* --- LISTA DE REPRODUCCIÓN --- */
+/* --- LISTA --- */
 .playlist {
     flex: 1;
     overflow-y: auto;
@@ -318,7 +306,6 @@ body {
     line-height: 1.2;
 }
 
-/* --- BOTÓN COMPRAR --- */
 .buy-button {
     background-color: #ffffff;
     color: #000000;
@@ -333,13 +320,8 @@ body {
     transition: transform 0.1s ease, background-color 0.2s ease;
 }
 
-.buy-button:hover {
-    background-color: #e6e6e6;
-}
-
-.buy-button:active {
-    transform: scale(0.95);
-}
+.buy-button:hover { background-color: #e6e6e6; }
+.buy-button:active { transform: scale(0.95); }
 
 /* --- REPRODUCTOR --- */
 .player {
@@ -410,7 +392,6 @@ body {
     line-height: 1.2;
 }
 
-/* --- BARRA DE PROGRESO --- */
 .progress-bar {
     width: 100%;
     height: 2px;
@@ -455,12 +436,8 @@ body {
     opacity: 0;
 }
 
-.progress-bar[aria-valuenow="0"] .progress-thumb {
-    opacity: 0;
-}
-.progress-bar:not([aria-valuenow="0"]) .progress-thumb {
-    opacity: 1;
-}
+.progress-bar[aria-valuenow="0"] .progress-thumb { opacity: 0; }
+.progress-bar:not([aria-valuenow="0"]) .progress-thumb { opacity: 1; }
 
 .time-labels {
     display: flex;
@@ -470,7 +447,6 @@ body {
     margin-top: 5px;
 }
 
-/* --- BOTÓN DE PLAY --- */
 .play-button {
     width: 45px;
     height: 45px;
@@ -485,18 +461,14 @@ body {
     background-color: transparent;
 }
 
-.play-button:hover {
-    background-color: #ffffff;
-}
+.play-button:hover { background-color: #ffffff; }
 
 .play-button:hover svg polygon,
 .play-button:hover svg rect {
     fill: #000000;
 }
 
-.play-button:active {
-    transform: scale(0.95);
-}
+.play-button:active { transform: scale(0.95); }
 
 .play-button svg {
     width: 18px;
@@ -505,7 +477,7 @@ body {
     transition: all 0.2s ease;
 }
 
-/* --- VENTANA MODAL DE COMPRA --- */
+/* --- MODAL --- */
 .purchase-modal-overlay {
     position: fixed;
     top: 0;
@@ -623,10 +595,126 @@ body {
     transition: transform 0.1s ease, background-color 0.2s ease;
 }
 
-.price-button:hover {
-    background-color: #e6e6e6;
+.price-button:hover { background-color: #e6e6e6; }
+.price-button:active { transform: scale(0.95); }
+
+/* ============================================================
+   FEEL NATIVO — toque tipo APP REAL
+   SIN cambiar la posición de ningún botón
+   ============================================================ */
+
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
 }
 
+html, body {
+    overscroll-behavior: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+    touch-action: auto;
+}
+
+button,
+a,
+.playlist-item,
+.submenu-link,
+.buy-button,
+.price-button,
+.play-button {
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+}
+
+/* Feedback táctil SIN mover ni escalar: solo opacidad/color */
+button:active,
+.buy-button:active,
 .price-button:active {
-    transform: scale(0.95);
+    opacity: 0.72;
+    transition: opacity 0.08s ease-out;
+}
+
+.play-button:active {
+    opacity: 0.65;
+}
+
+.submenu-link:active {
+    opacity: 0.75;
+    background-color: #1a1a1a;
+}
+
+.playlist-item:active {
+    background-color: #1f1f1f;
+}
+
+/* Ripple: NO toca position */
+.ripple-host {
+    overflow: hidden;
+    isolation: isolate;
+}
+
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    transform: scale(0);
+    background: var(--ripple-color, rgba(255, 255, 255, 0.32));
+    pointer-events: none;
+    z-index: 1;
+    animation: ripple-expand 550ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes ripple-expand {
+    to {
+        transform: scale(2.6);
+        opacity: 0;
+    }
+}
+
+.buy-button,
+.price-button {
+    --ripple-color: rgba(0, 0, 0, 0.18);
+}
+
+/* Scroll con inercia en iOS (no altera layout) */
+.playlist {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Desactivar hover pegajoso en táctil */
+@media (hover: none) {
+    .playlist-item:hover {
+        background-color: transparent;
+        padding: 5px 0;
+        margin-left: 0;
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .buy-button:hover,
+    .price-button:hover { background-color: #ffffff; }
+
+    .play-button:hover { background-color: transparent; }
+
+    .play-button:hover svg polygon,
+    .play-button:hover svg rect { fill: #ffffff; }
+
+    .submenu-list li a:hover {
+        background-color: transparent;
+        color: #ffffff;
+        padding-left: 12px;
+    }
+
+    .close-submenu:hover {
+        color: #ffffff;
+        transform: none;
+    }
 }
