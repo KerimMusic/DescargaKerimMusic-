@@ -24,63 +24,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const ICON_PAUSE = '<rect x="6" y="4" width="4" height="16" fill="#ffffff" />' +
                        '<rect x="14" y="4" width="4" height="16" fill="#ffffff" />';
 
-    /* ============================================================
-       FEEL NATIVO: HAPTICS + RIPPLE
-       ============================================================ */
+    /* ---------- Feel nativo: haptics + ripple ---------- */
 
-    // Vibración suave (solo si el dispositivo la soporta)
-    function haptic(ms = 12) {
+    function haptic(ms) {
         if (navigator.vibrate) {
-            try { navigator.vibrate(ms); } catch (_) {}
+            try { navigator.vibrate(ms || 12); } catch (_) {}
         }
     }
 
-    // Crea el efecto ripple en cualquier elemento pulsable
-    function attachRipple(el, opts = {}) {
+    function attachRipple(el, options) {
         if (!el || el.dataset.rippleReady === '1') return;
         el.dataset.rippleReady = '1';
 
+        if (getComputedStyle(el).position === 'static') {
+            el.style.position = 'relative';
+        }
         el.classList.add('ripple-host');
 
         el.addEventListener('pointerdown', (e) => {
             const rect = el.getBoundingClientRect();
             const size = Math.max(rect.width, rect.height);
-            const x = (e.clientX ?? rect.left + rect.width / 2) - rect.left;
-            const y = (e.clientY ?? rect.top  + rect.height / 2) - rect.top;
+            const x = (e.clientX || rect.left + rect.width / 2) - rect.left;
+            const y = (e.clientY || rect.top + rect.height / 2) - rect.top;
 
             const ripple = document.createElement('span');
             ripple.className = 'ripple';
             ripple.style.width  = ripple.style.height = size + 'px';
             ripple.style.left   = (x - size / 2) + 'px';
             ripple.style.top    = (y - size / 2) + 'px';
-
             el.appendChild(ripple);
-
             ripple.addEventListener('animationend', () => ripple.remove());
         });
 
-        // Haptic en el momento del toque real
-        el.addEventListener('pointerdown', () => haptic(opts.haptic ?? 12), { passive: true });
+        el.addEventListener('pointerdown', () => haptic(options && options.haptic), { passive: true });
     }
 
-    // Aplicar ripple + haptics a TODOS los elementos pulsables
-    const RIPPLE_TARGETS = [
-        '.menu-btn',
-        '.heart-search-btn',
-        '.share-btn',
-        '.close-submenu',
-        '.submenu-link',
-        '.close-modal',
-        '.buy-button',
-        '.price-button',
-        '.play-button'
-    ];
+    ['.menu-btn', '.heart-search-btn', '.share-btn', '.close-submenu',
+     '.close-modal', '.submenu-link', '.buy-button', '.price-button', '.play-button']
+        .forEach(selector => {
+            document.querySelectorAll(selector).forEach(el => attachRipple(el));
+        });
 
-    RIPPLE_TARGETS.forEach(selector => {
-        document.querySelectorAll(selector).forEach(el => attachRipple(el));
-    });
-
-    // En las filas de la lista un ripple más tenue y sin vibrar
     document.querySelectorAll('.playlist-item').forEach(el => {
         attachRipple(el, { haptic: 0 });
         el.style.setProperty('--ripple-color', 'rgba(255, 255, 255, 0.10)');
@@ -271,11 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalImg.src = cover;
 
             modalItem = item;
-
             purchaseModal.classList.add('visible');
-
-            // Ripple/haptic en el botón de comprar recién creado (por si es dinámico)
-            attachRipple(e.target.closest('.buy-button'));
 
             e.stopPropagation();
             return;
@@ -346,7 +326,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = buildTelegramUrl(beatTitle, beatInfo, licencia);
 
             window.open(url, '_blank');
-
             purchaseModal.classList.remove('visible');
         });
     });
