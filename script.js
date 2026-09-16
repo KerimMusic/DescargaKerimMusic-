@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const player         = document.getElementById('player');
     const playlist       = document.getElementById('playlist');
 
-    // Elementos de la Modal
     const purchaseModal  = document.getElementById('purchase-modal');
     const closeModalBtn  = document.getElementById('close-modal');
     const modalImg       = document.getElementById('modal-img');
@@ -24,6 +23,68 @@ document.addEventListener('DOMContentLoaded', () => {
     const ICON_PLAY  = '<polygon points="5,3 19,12 5,21" fill="#ffffff" />';
     const ICON_PAUSE = '<rect x="6" y="4" width="4" height="16" fill="#ffffff" />' +
                        '<rect x="14" y="4" width="4" height="16" fill="#ffffff" />';
+
+    /* ============================================================
+       FEEL NATIVO: HAPTICS + RIPPLE
+       ============================================================ */
+
+    // Vibración suave (solo si el dispositivo la soporta)
+    function haptic(ms = 12) {
+        if (navigator.vibrate) {
+            try { navigator.vibrate(ms); } catch (_) {}
+        }
+    }
+
+    // Crea el efecto ripple en cualquier elemento pulsable
+    function attachRipple(el, opts = {}) {
+        if (!el || el.dataset.rippleReady === '1') return;
+        el.dataset.rippleReady = '1';
+
+        el.classList.add('ripple-host');
+
+        el.addEventListener('pointerdown', (e) => {
+            const rect = el.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = (e.clientX ?? rect.left + rect.width / 2) - rect.left;
+            const y = (e.clientY ?? rect.top  + rect.height / 2) - rect.top;
+
+            const ripple = document.createElement('span');
+            ripple.className = 'ripple';
+            ripple.style.width  = ripple.style.height = size + 'px';
+            ripple.style.left   = (x - size / 2) + 'px';
+            ripple.style.top    = (y - size / 2) + 'px';
+
+            el.appendChild(ripple);
+
+            ripple.addEventListener('animationend', () => ripple.remove());
+        });
+
+        // Haptic en el momento del toque real
+        el.addEventListener('pointerdown', () => haptic(opts.haptic ?? 12), { passive: true });
+    }
+
+    // Aplicar ripple + haptics a TODOS los elementos pulsables
+    const RIPPLE_TARGETS = [
+        '.menu-btn',
+        '.heart-search-btn',
+        '.share-btn',
+        '.close-submenu',
+        '.submenu-link',
+        '.close-modal',
+        '.buy-button',
+        '.price-button',
+        '.play-button'
+    ];
+
+    RIPPLE_TARGETS.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => attachRipple(el));
+    });
+
+    // En las filas de la lista un ripple más tenue y sin vibrar
+    document.querySelectorAll('.playlist-item').forEach(el => {
+        attachRipple(el, { haptic: 0 });
+        el.style.setProperty('--ripple-color', 'rgba(255, 255, 255, 0.10)');
+    });
 
     /* ---------- Utilidades ---------- */
 
@@ -50,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return Array.from(playlist.querySelectorAll('.playlist-item'));
     }
 
-    /* ---------- Título unificado: fuente única de verdad ---------- */
     function getItemTitle(item) {
         if (!item) return '';
         return (
@@ -60,7 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
 
-    /* ---------- Portada unificada: fuente única de verdad ---------- */
     function getItemCover(item) {
         if (!item) return '';
         const img = item.querySelector('.thumbnail img');
@@ -68,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return item.dataset.cover || '';
     }
 
-    /* ---------- Mezclar aleatoriamente la lista ---------- */
+    /* ---------- Mezclar ---------- */
 
     function shufflePlaylist() {
         const items = getAllItems();
@@ -79,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         items.forEach(item => playlist.appendChild(item));
     }
 
-    /* ---------- Cargar un ítem en el reproductor ---------- */
+    /* ---------- Cargar item ---------- */
 
     function loadItem(item, autoplay = true) {
         if (!item) return;
@@ -115,8 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /* ---------- Manejo de errores de carga ---------- */
-
     function handleLoadError(failedItem) {
         if (isSkipping) return;
         isSkipping = true;
@@ -138,8 +195,6 @@ document.addEventListener('DOMContentLoaded', () => {
         handleLoadError(currentItem);
     });
 
-    /* ---------- Elegir un ítem aleatorio ---------- */
-
     function playRandomItem() {
         const items = getAllItems();
         if (items.length === 0) return;
@@ -152,18 +207,14 @@ document.addEventListener('DOMContentLoaded', () => {
         loadItem(randomItem, true);
     }
 
-    /* ---------- Inicialización ---------- */
+    /* ---------- Init ---------- */
 
     shufflePlaylist();
 
-    // ✅ El reproductor inicia detenido, sin reproducción automática.
-    // La reproducción comienza solo cuando el usuario elige un beat de la lista.
-
-    /* ---------- Botón de play ---------- */
+    /* ---------- Play ---------- */
 
     playButton.addEventListener('click', () => {
         if (!currentItem) {
-            // ✅ ALEATORIO: si no hay nada cargado, elige una al azar
             playRandomItem();
             return;
         }
@@ -174,7 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ---------- Eventos del audio ---------- */
+    /* ---------- Eventos de audio ---------- */
 
     audioPlayer.addEventListener('play',  () => updateIcon(true));
     audioPlayer.addEventListener('pause', () => updateIcon(false));
@@ -194,10 +245,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateIcon(false);
         updateProgress(0);
         currentTimeEl.textContent = '0:00';
-        playRandomItem(); // ✅ ALEATORIO: al terminar salta a otra al azar
+        playRandomItem();
     });
 
-    /* ---------- Buscar en la barra de progreso ---------- */
+    /* ---------- Buscar en barra de progreso ---------- */
 
     progressBar.addEventListener('click', (e) => {
         if (!audioPlayer.duration) return;
@@ -206,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         audioPlayer.currentTime = Math.min(1, Math.max(0, ratio)) * audioPlayer.duration;
     });
 
-    /* ---------- Clic en la lista de reproducción y botón COMPRAR ---------- */
+    /* ---------- Lista + COMPRAR ---------- */
 
     playlist.addEventListener('click', (e) => {
         if (e.target.closest('.buy-button')) {
@@ -223,6 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             purchaseModal.classList.add('visible');
 
+            // Ripple/haptic en el botón de comprar recién creado (por si es dinámico)
+            attachRipple(e.target.closest('.buy-button'));
+
             e.stopPropagation();
             return;
         }
@@ -232,7 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadItem(item, true);
     });
 
-    /* ---------- Eventos de la Modal ---------- */
+    /* ---------- Modal ---------- */
 
     closeModalBtn.addEventListener('click', () => {
         purchaseModal.classList.remove('visible');
@@ -244,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ---------- Compra: abrir Telegram con mensaje dinámico ---------- */
+    /* ---------- Compra → Telegram ---------- */
 
     const TELEGRAM_USER = 'https://t.me/Soporte95';
 
@@ -297,7 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    /* ---------- Sincronización EN VIVO de portadas ---------- */
+    /* ---------- Sincronización de portadas ---------- */
     const coverObserver = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
             const img  = mutation.target;
@@ -322,14 +376,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    /* ---------- FUNCIÓN DE BÚSQUEDA CON EL CORAZÓN ---------- */
+    /* ---------- Buscar (corazón) ---------- */
     const heartSearchBtn  = document.getElementById('heart-search-btn');
     const searchContainer = document.getElementById('search-container');
     const searchInput     = document.getElementById('search-input');
 
     if (heartSearchBtn && searchContainer && searchInput) {
 
-        // Abrir/Cerrar la barra de búsqueda al hacer clic en el corazón
         heartSearchBtn.addEventListener('click', () => {
             searchContainer.classList.toggle('visible');
 
@@ -341,7 +394,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Filtrar los beats en tiempo real mientras se escribe
         searchInput.addEventListener('input', (e) => {
             const query = e.target.value.toLowerCase().trim();
             const items = document.querySelectorAll('.playlist-item');
@@ -359,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ---------- FUNCIÓN DE COMPARTIR (enlace de descarga APK) ---------- */
+    /* ---------- Compartir ---------- */
     const shareBtn = document.getElementById('share-btn');
     const SHARE_URL = 'https://kerimmusic.github.io/DescargarAppOmegaBeats/';
 
@@ -388,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /* ---------- SUBMENÚ FIJO (PANEL LATERAL) ---------- */
+    /* ---------- Submenú ---------- */
     const menuBtn         = document.getElementById('menu-btn');
     const submenu         = document.getElementById('submenu');
     const submenuOverlay  = document.getElementById('submenu-overlay');
@@ -412,12 +464,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (closeSubmenuBtn) closeSubmenuBtn.addEventListener('click', closeSubmenu);
     if (submenuOverlay)  submenuOverlay.addEventListener('click', closeSubmenu);
 
-    // Cerrar el submenú al hacer clic en cualquier enlace interno
     document.querySelectorAll('.submenu-link').forEach(link => {
         link.addEventListener('click', closeSubmenu);
     });
 
-    // Cerrar con la tecla Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') closeSubmenu();
     });
